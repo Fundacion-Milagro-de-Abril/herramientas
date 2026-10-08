@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<!-- FMA · Directorio de rutas de atención v1.0
+     Herramienta ciudadana autónoma. Compatible con Google Apps Script / Google Sites.
+     Datos: única fuente = FMA_Base_Maestra_Directorio_2026_v1.0 (hoja Directorio_Publicar, Publicar = Sí).
+     Para actualizar: reemplazar SOLO el bloque «DATOS DEL DIRECTORIO» con el contenido de
+     FMA_Directorio_Data_v1.0.json (misma estructura). No editar registros dentro de la lógica. -->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base target="_top">
+<title>Directorio de rutas de atención · Fundación Milagro de Abril</title>
+<meta name="description" content="Directorio de entidades y organizaciones verificadas por la Fundación Milagro de Abril: canales, horarios, cobertura y funciones para Nacional, Caldas y Manizales.">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   IDENTIDAD FMA · Manual Maestro de Marca V.1.1 (mismo sistema que «Rutas de atención»)
+   Poppins: títulos, navegación, labels, botones, UI · Nunito Sans: cuerpo, fichas, detalles.
+   Turquesa Profundo #0B7F95 = CTA primario / UI · Turquesa Sello #17A2B8 = acento de identidad
+   Violeta Texto #5B54C9 = títulos y acentos · Tinta #2B2C40 = texto · Nube / Crema / Blanco = fondos.
+   Blanco y neutros dominantes; sin degradados; sombras mínimas. WCAG 2.2 AA.
+   ============================================================ */
+:root{
+  --sello:#17A2B8; --prof:#0B7F95; --prof-osc:#0a6d80;
+  --violeta:#736EFE; --violeta-tx:#5B54C9;
+  --naranja:#FF7F30;
+  --tinta:#2B2C40; --gris:#6A6C82;
+  --nube:#F4F5FB; --crema:#FBF7F0; --blanco:#fff;
+  --linea:#e2e5ef; --prof-claro:#e7f5f8; --violeta-claro:#eeecfe;
+  --radio:12px; --sombra:0 1px 3px rgba(43,44,64,.10);
+  --f-tit:"Poppins","Segoe UI",Arial,sans-serif;
+  --f-cuerpo:"Nunito Sans","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--f-cuerpo);color:var(--tinta);background:var(--nube);line-height:1.6;font-size:16px;overflow-wrap:break-word}
+h1,h2,h3,h4,.btn,label,legend,summary,.kicker,.seg span,.tag,.badge,#btn-salida{font-family:var(--f-tit)}
+img{max-width:100%}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--prof)}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--violeta);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.int{max-width:960px;margin:0 auto}
+.skip{position:absolute;left:-9999px;top:0;background:var(--tinta);color:#fff;padding:10px 16px;z-index:300;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* 00 · Header */
+header.app{background:var(--blanco);border-bottom:1px solid var(--linea)}
+.head-fila{display:flex;align-items:center;gap:14px;padding:12px 16px;padding-right:170px}
+#logo-link{height:52px;flex:0 0 auto;display:flex;align-items:center;min-height:44px;text-decoration:none;font-family:var(--f-tit);font-weight:700;color:var(--prof)}
+#logo-link img{height:52px;width:auto;display:block}
+.head-tit{border-left:1px solid var(--linea);padding-left:14px;display:flex;flex-direction:column;line-height:1.2}
+.head-tit b{font-family:var(--f-tit);font-weight:600;font-size:1rem;color:var(--violeta-tx)}
+.head-tit span{font-size:.8rem;color:var(--gris)}
+#btn-salida{position:fixed;top:10px;right:12px;z-index:250;background:var(--tinta);color:#fff;border-radius:8px;padding:10px 16px;font-weight:700;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.25);min-height:44px;display:inline-flex;align-items:center;text-decoration:none}
+#btn-salida:hover{background:#000}
+
+/* 01 · Canales inmediatos */
+.emergencia{background:var(--crema);border-bottom:1px solid #efe6d8}
+.emergencia .int{padding:9px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.emergencia .txt{font-size:.88rem;color:#7a3a00;flex:1 1 220px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none}
+a.chip{display:inline-flex;flex-direction:column;justify-content:center;background:#fff;border:1px solid var(--linea);border-left:3px solid var(--prof);border-radius:8px;padding:5px 12px;text-decoration:none;min-height:44px;min-width:44px}
+a.chip b{font-family:var(--f-tit);font-weight:600;color:var(--prof);font-size:.98rem;line-height:1.1}
+a.chip span{font-size:.78rem;color:var(--gris)}
+a.chip:hover{background:var(--prof-claro)}
+a.chip.urg{border-left-color:var(--naranja)}
+a.chip.urg b{color:#b5490f}
+
+/* Estructura */
+main{padding:26px 16px 80px}
+main>section{margin-bottom:22px}
+h1,h2{font-family:var(--f-tit);font-weight:700;color:var(--violeta-tx);line-height:1.25}
+h1{font-size:1.9rem;margin-bottom:10px}
+h1:focus{outline:none}
+h2{font-size:1.3rem;margin-bottom:6px}
+h2.linea::after{content:"";display:block;width:44px;height:3px;border-radius:3px;background:var(--sello);margin-top:8px}
+.mini{font-size:.875rem;color:var(--gris)}
+.caja{background:#fff;border:1px solid var(--linea);border-radius:var(--radio);box-shadow:var(--sombra);padding:22px}
+
+/* Botones */
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.95rem;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;text-decoration:none;cursor:pointer;line-height:1.25;text-align:center}
+.btn-primario{background:var(--prof);color:#fff}
+.btn-primario:hover{background:var(--prof-osc)}
+.btn-sec{background:#fff;color:var(--prof);border:1.5px solid var(--prof)}
+.btn-sec:hover{background:var(--prof-claro)}
+.btn[disabled]{background:#fff;color:var(--gris);border:1.5px dashed var(--gris);cursor:not-allowed}
+.btn-terc{background:none;border:0;color:var(--prof);text-decoration:underline;font-weight:600;font-size:.95rem;min-height:44px;padding:6px 4px;cursor:pointer;font-family:var(--f-tit)}
+.btn-terc:hover{color:var(--prof-osc)}
+
+/* 02 · Hero */
+.hero{border-left:4px solid var(--sello)}
+.kicker{display:block;font-size:.8rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--prof);margin-bottom:6px}
+.hero p.intro{color:var(--tinta);max-width:62ch;font-size:1.05rem}
+.hero .verif{margin-top:6px}
+.a-rutas{margin-top:18px;background:var(--violeta-claro);border-left:4px solid var(--violeta);border-radius:0 10px 10px 0;padding:14px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.a-rutas p{flex:1 1 220px;font-size:.95rem}
+.a-rutas b{font-family:var(--f-tit);font-weight:600;color:var(--violeta-tx)}
+
+/* 03 · Filtros */
+.filtros{display:grid;gap:18px}
+fieldset{border:0;min-width:0}
+legend,label.lab{display:block;font-weight:600;font-size:.95rem;color:var(--tinta);margin-bottom:6px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--prof);border-radius:12px;overflow:hidden;background:#fff}
+.seg label{position:relative;display:block;cursor:pointer}
+.seg label+label{border-left:1.5px solid var(--prof)}
+.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:flex;align-items:center;justify-content:center;min-height:52px;padding:8px 6px;font-weight:600;font-size:1rem;color:var(--prof);text-align:center}
+.seg label:hover span{background:var(--prof-claro)}
+.seg input:checked+span{background:var(--prof);color:#fff}
+.seg input:checked+span::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;flex:0 0 auto}
+.seg input:focus-visible+span{outline:3px solid var(--violeta);outline-offset:-5px;border-radius:9px}
+.campos{display:grid;gap:14px}
+input[type=search],select{width:100%;min-height:48px;border:1.5px solid var(--gris);border-radius:10px;background:#fff;padding:10px 12px;font-family:var(--f-cuerpo);font-size:1rem}
+select{appearance:none;-webkit-appearance:none;padding-right:40px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%232B2C40' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+input[type=search]:hover,select:hover{border-color:var(--prof)}
+.mun-fijo{font-size:.95rem;color:var(--tinta);background:var(--prof-claro);border-radius:8px;padding:10px 12px}
+details.mas{border-top:1px solid var(--linea);padding-top:6px}
+details.mas>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;min-height:44px;font-weight:600;color:var(--prof);padding:4px 2px}
+details.mas>summary::-webkit-details-marker{display:none}
+details.mas>summary::before{content:"+";font-size:1.2rem;color:var(--violeta-tx);width:14px}
+details.mas[open]>summary::before{content:"–"}
+details.mas .campos{padding:8px 0 4px}
+.check{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;font-family:var(--f-cuerpo);font-weight:400;font-size:1rem;color:var(--tinta)}
+.check input{width:22px;height:22px;accent-color:var(--prof);flex:0 0 auto}
+.fila-est{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;border-top:1px solid var(--linea);padding-top:12px}
+#contador{font-family:var(--f-tit);font-weight:600;font-size:.98rem;color:var(--tinta)}
+
+/* 04 · Resultados */
+.grupo{margin-top:22px}
+.grupo h3{font-family:var(--f-tit);font-weight:600;font-size:1.05rem;color:var(--prof);margin-bottom:10px;display:flex;align-items:baseline;gap:8px}
+.grupo h3 small{font-size:.85rem;font-weight:500;color:var(--gris)}
+.lista{display:grid;grid-template-columns:1fr;gap:12px;list-style:none;align-items:start}
+.lista>li{align-self:start}
+.ficha{background:#fff;border:1px solid var(--linea);border-radius:var(--radio);padding:18px;display:flex;flex-direction:column;gap:8px;height:auto;align-self:start}
+.meta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.tag{display:inline-block;background:var(--violeta-claro);color:var(--violeta-tx);border-radius:6px;padding:2px 10px;font-size:.8rem;font-weight:600}
+.badge{display:inline-block;background:#fff;border:1px solid var(--prof);color:var(--prof);border-radius:6px;padding:1px 8px;font-size:.8rem;font-weight:600}
+.lugar{font-size:.875rem;color:var(--gris)}
+.ficha h4{font-family:var(--f-tit);font-weight:600;font-size:1.12rem;line-height:1.3;color:var(--tinta)}
+.ficha .entidad{font-size:.95rem;color:var(--gris);margin-top:-4px}
+.ficha .funcion{font-size:1rem;max-width:72ch}
+.acciones{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+details.det{border-top:1px solid var(--linea);margin-top:6px}
+details.det>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600;font-size:.95rem;color:var(--prof);padding-top:4px}
+details.det>summary::-webkit-details-marker{display:none}
+details.det>summary::before{content:"+";font-size:1.2rem;color:var(--violeta-tx);width:14px}
+details.det[open]>summary::before{content:"–"}
+dl.datos{display:grid;gap:10px;padding:6px 0 2px}
+dl.datos dt{font-family:var(--f-tit);font-weight:600;font-size:.875rem;color:var(--violeta-tx)}
+dl.datos dd{font-size:.95rem}
+dl.datos dd ul{list-style:none}
+dl.datos dd .sin-enlace{display:inline-flex;align-items:center;min-height:44px}
+dl.datos dd a{display:inline-flex;align-items:center;min-height:44px;word-break:break-all}
+.fuente{background:var(--nube);border-radius:8px;padding:10px 12px;font-size:.9rem;color:var(--tinta)}
+
+/* 05 · Sin resultados */
+.vacio{text-align:left;border-left:4px solid var(--violeta)}
+.vacio h3{font-family:var(--f-tit);font-weight:600;font-size:1.1rem;color:var(--tinta);margin-bottom:4px}
+.vacio .acciones{margin-top:12px}
+
+/* 06 · Información */
+.info ul{padding-left:20px;display:grid;gap:6px;font-size:.95rem}
+
+/* 07 · Footer */
+footer.app{background:var(--tinta);color:#dfe1ea;padding:22px 16px 40px;font-size:.875rem}
+footer.app .int{display:grid;gap:6px}
+
+@media(min-width:760px){
+  .campos.dos{grid-template-columns:2fr 1fr}
+  .campos.tres{grid-template-columns:1fr 1fr}
+  .caja{padding:26px}
+}
+@media(max-width:600px){
+  h1{font-size:1.55rem}h2{font-size:1.2rem}
+  .head-tit span{display:none}
+  .head-fila{padding-right:16px}
+  #logo-link,#logo-link img{height:44px}
+  .caja{padding:18px 16px}
+  main{padding:20px 12px 100px}
+  footer.app{padding-bottom:96px}
+  #btn-salida{top:auto;bottom:calc(12px + env(safe-area-inset-bottom));right:12px}
+  .acciones .btn{flex:1 1 auto}
+}
+@media(max-width:380px){
+  .seg span{font-size:.92rem}
+  .seg input:checked+span::before{margin-right:5px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido" target="_self">Saltar al contenido</a>
+
+<!-- 00 · HEADER -->
+<header class="app" id="inicio">
+  <div class="head-fila int">
+    <a id="logo-link" href="#inicio" target="_self" aria-label="Fundación Milagro de Abril · volver al inicio del directorio">FMA</a>
+    <div class="head-tit"><b>Directorio de rutas de atención</b><span>Entidades y organizaciones verificadas por FMA</span></div>
+  </div>
+  <a id="btn-salida" href="https://www.google.com/" target="_top" rel="noreferrer">Salida rápida</a>
+</header>
+
+<!-- 01 · CANALES INMEDIATOS -->
+<div class="emergencia" role="region" aria-label="Canales nacionales inmediatos">
+  <div class="int">
+    <p class="txt"><b>¿Peligro inmediato o riesgo para la vida?</b> Llama ahora:</p>
+    <ul class="chips" id="chips-emergencia"></ul>
+  </div>
+</div>
+
+<main id="contenido" tabindex="-1">
+  <!-- 02 · HERO -->
+  <section class="caja hero" aria-labelledby="h1">
+    <span class="kicker">Directorio</span>
+    <h1 id="h1" tabindex="-1">Encuentra una entidad u organización</h1>
+    <p class="intro">Consulta canales, horarios, cobertura y funciones de entidades públicas y organizaciones relacionadas con las rutas de atención.</p>
+    <p class="mini verif">Directorio de entidades y organizaciones verificadas por FMA.</p>
+    <div class="a-rutas" id="acceso-rutas"></div>
+  </section>
+
+  <!-- 03 · FILTROS -->
+  <section class="caja" aria-labelledby="h-filtros">
+    <h2 id="h-filtros" class="linea">Busca en el directorio</h2>
+    <form class="filtros" id="form-filtros" role="search" aria-label="Filtros del directorio" onsubmit="return false">
+      <fieldset>
+        <legend>Cobertura</legend>
+        <div class="seg" id="seg-cobertura"></div>
+      </fieldset>
+      <div class="campos dos">
+        <div>
+          <label class="lab" for="f-buscar">Buscar</label>
+          <input type="search" id="f-buscar" placeholder="Ej. ICBF, Comisaría, salud, justicia…" autocomplete="off" spellcheck="false" enterkeyhint="search">
+        </div>
+        <div>
+          <label class="lab" for="f-sector">Sector / necesidad</label>
+          <select id="f-sector"></select>
+        </div>
+      </div>
+      <div id="bloque-mun">
+        <div id="mun-select">
+          <label class="lab" for="f-municipio">Municipio</label>
+          <select id="f-municipio"></select>
+        </div>
+        <p class="mun-fijo" id="mun-fijo" hidden>Municipio: <b>Manizales</b></p>
+      </div>
+      <details class="mas" id="mas-filtros">
+        <summary>Más filtros</summary>
+        <div class="campos tres">
+          <div>
+            <label class="lab" for="f-tipo">Tipo de entidad</label>
+            <select id="f-tipo"></select>
+          </div>
+          <div>
+            <label class="lab" for="f-poblacion">Población</label>
+            <select id="f-poblacion"></select>
+          </div>
+        </div>
+        <label class="check" for="f-24h"><input type="checkbox" id="f-24h"> Solo canales disponibles 24 horas</label>
+      </details>
+      <div class="fila-est">
+        <p id="contador" role="status" aria-live="polite" aria-atomic="true"></p>
+        <button type="button" class="btn-terc" id="btn-limpiar">Limpiar filtros</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- 04 · RESULTADOS -->
+  <section aria-labelledby="h-res">
+    <h2 id="h-res" class="linea">Resultados</h2>
+    <div id="resultados"></div>
+    <!-- 05 · SIN RESULTADOS -->
+    <div class="caja vacio" id="vacio" hidden>
+      <h3>No encontramos resultados con estos filtros.</h3>
+      <p>Prueba otra palabra o amplía el territorio.</p>
+      <div class="acciones" id="vacio-acciones"></div>
+    </div>
+  </section>
+
+  <!-- 06 · INFORMACIÓN DE ACTUALIZACIÓN -->
+  <section class="caja info" aria-labelledby="h-info">
+    <h2 id="h-info" class="linea">Sobre este directorio</h2>
+    <ul>
+      <li>Reúne entidades y organizaciones cuya información fue depurada y verificada por FMA. No es un listado completo de las entidades del país.</li>
+      <li>FMA amplía y actualiza progresivamente este directorio.</li>
+      <li id="info-fecha"></li>
+      <li>Cada ficha indica su fuente y fecha de actualización en «Ver detalles». Antes de desplazarte, confirma horarios por los canales de la entidad.</li>
+    </ul>
+  </section>
+</main>
+
+<!-- 07 · FOOTER -->
+<footer class="app">
+  <div class="int">
+    <span>Directorio de entidades y organizaciones verificadas por FMA. FMA amplía y actualiza progresivamente este directorio.</span>
+    <span>Esta herramienta no solicita nombre ni datos personales, no guarda tus búsquedas ni filtros y no envía información a la Fundación Milagro de Abril.</span>
+    <span>La <b>Salida rápida</b> te lleva a otra página; no elimina el historial del navegador ni los archivos descargados.</span>
+    <span id="pie-version"></span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ============ CONFIGURACIÓN EDITABLE ============ */
+const CONFIG={
+  nombre:"Directorio de rutas de atención",
+  version:"1.0",
+  // Logo oficial FMA (mismo recurso que «Rutas de atención»). Vacío = distintivo tipográfico provisional.
+  logoURL:"data:image/png;base64,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",
+  // Destino de la Salida rápida (decisión FMA).
+  salidaURL:"https://www.google.com/",
+  // Herramienta «Rutas de atención» (separada). Vacío = acceso desactivado. Con URL = enlace en la misma pestaña.
+  rutasURL:"https://herramientas.fundacionmilagrodeabril.org/rutas-atencion",
+  // Cobertura seleccionada al abrir: "nacional" | "caldas" | "manizales".
+  coberturaInicial:"caldas"
+};
+/* Franja 01 · canales nacionales inmediatos definidos por FMA */
+const CANALES=[
+  {num:"123",tel:"123",lab:"Emergencias",urg:true},
+  {num:"122",tel:"122",lab:"Fiscalía"},
+  {num:"141",tel:"141",lab:"ICBF"},
+  {num:"155",tel:"155",lab:"SALVIA"}
+];
+/* Hoja «Catalogos» de la Base Maestra: orden y denominaciones oficiales de los filtros */
+const CATALOGOS={
+  cobertura:[{id:"nacional",n:"Nacional"},{id:"caldas",n:"Caldas"},{id:"manizales",n:"Manizales"}],
+  tipoEntidad:["Línea nacional","Entidad pública","Institución educativa","Organización social"],
+  sector:["Emergencias","Salud","Protección","Justicia","Mujeres y VBG","Ministerio Público","Educación","Acompañamiento social"],
+  municipiosCaldas:["Aguadas","Anserma","Aranzazu","Belalcázar","Chinchiná","Filadelfia","La Dorada","La Merced","Manizales","Manzanares","Marmato","Marquetalia","Marulanda","Neira","Norcasia","Palestina","Pensilvania","Pácora","Riosucio","Risaralda","Salamina","Samaná","San José","Supía","Victoria","Villamaría","Viterbo"]
+};
+</script>
+<script>
+/* ================= DATOS DEL DIRECTORIO =================
+   Fuente única: FMA_Base_Maestra_Directorio_2026_v1.0 · hoja Directorio_Publicar · Publicar = Sí.
+   Copia idéntica de FMA_Directorio_Data_v1.0.json. Registros: 48.
+   telefonos[].texto = lo que ve la persona (Telefono_X) · telefonos[].tel = valor de href="tel:" (Telefono_X_tel).
+   tel = null → número sin marcación directa: se muestra como texto, sin enlace. */
+const DIRECTORIO_DATA = [
+  {
+    "id": "nat-123",
+    "territorio": "Nacional",
+    "municipio": "",
+    "tipoEntidad": "Línea nacional",
+    "sector": "Emergencias",
+    "nombre": "Línea 123 · Emergencias",
+    "entidad": "Policía Nacional / Sistema de emergencias",
+    "poblacion": [
+      "Población general"
+    ],
+    "funcion": "Atención de situaciones que requieren respuesta inmediata de los servicios de emergencia.",
+    "telefonos": [
+      {
+        "texto": "123",
+        "tel": "123"
+      }
+    ],
+    "correos": [],
+    "sitioWeb": "https://www.policia.gov.co/",
+    "direccion": "",
+    "horario": "24 horas",
+    "cobertura": "Nacional",
+    "disponible24h": true,
+    "fuente": "Canal nacional de emergencias",
+    "fuenteURL": "https://www.policia.gov.co/",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "nat-122",
+    "territorio": "Nacional",
+    "municipio": "",
+    "tipoEntidad": "Línea nacional",
+    "sector": "Justicia",
+    "nombre": "Línea 122 · Fiscalía General de la Nación",
+    "entidad": "Fiscalía General de la Nación",
+    "poblacion": [
+      "Población general"
+    ],
+    "funcion": "Orientación y recepción de reportes o denuncias sobre hechos que puedan constituir delitos.",
+    "telefonos": [
+      {
+        "texto": "122",
+        "tel": "122"
+      },
+      {
+        "texto": "01 8000 919 748",
+        "tel": "018000919748"
+      }
+    ],
+    "correos": [],
+    "sitioWeb": "https://www.fiscalia.gov.co/colombia/",
+    "direccion": "",
+    "horario": "24 horas por canales nacionales",
+    "cobertura": "Nacional",
+    "disponible24h": true,
+    "fuente": "Ruta Departamental de Caldas · Directorio Fiscalía 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "nat-141",
+    "territorio": "Nacional",
+    "municipio": "",
+    "tipoEntidad": "Línea nacional",
+    "sector": "Protección",
+    "nombre": "Línea 141 · ICBF",
+    "entidad": "Instituto Colombiano de Bienestar Familiar",
+    "poblacion": [
+      "Niñas, niños y adolescentes",
+      "Familias"
+    ],
+    "funcion": "Protección, emergencia y orientación cuando están amenazados o vulnerados los derechos de niñas, niños o adolescentes.",
+    "telefonos": [
+      {
+        "texto": "141",
+        "tel": "141"
+      },
+      {
+        "texto": "01 8000 91 80 80",
+        "tel": "018000918080"
+      }
+    ],
+    "correos": [
+      "atencionalciudadano@icbf.gov.co"
+    ],
+    "sitioWeb": "https://www.icbf.gov.co/linea-141",
+    "direccion": "",
+    "horario": "Línea 141: 24 horas",
+    "cobertura": "Nacional",
+    "disponible24h": true,
+    "fuente": "ICBF · Línea 141",
+    "fuenteURL": "https://www.icbf.gov.co/linea-141",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "nat-155",
+    "territorio": "Nacional",
+    "municipio": "",
+    "tipoEntidad": "Línea nacional",
+    "sector": "Mujeres y VBG",
+    "nombre": "Línea 155 · SALVIA",
+    "entidad": "Sistema Nacional SALVIA",
+    "poblacion": [
+      "Mujeres",
+      "Personas LGBTIQ+",
+      "Personas afectadas por VBG"
+    ],
+    "funcion": "Orientación frente a violencias basadas en género y articulación con rutas institucionales.",
+    "telefonos": [
+      {
+        "texto": "155",
+        "tel": "155"
+      }
+    ],
+    "correos": [],
+    "sitioWeb": "https://salvia.minigualdadyequidad.gov.co/static/landing.html",
+    "direccion": "",
+    "horario": "24 horas",
+    "cobertura": "Nacional",
+    "disponible24h": true,
+    "fuente": "Ministerio de Igualdad y Equidad · SALVIA",
+    "fuenteURL": "https://salvia.minigualdadyequidad.gov.co/static/landing.html",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "soc-rutapacifica",
+    "territorio": "Nacional",
+    "municipio": "",
+    "tipoEntidad": "Organización social",
+    "sector": "Acompañamiento social",
+    "nombre": "Ruta Pacífica de las Mujeres",
+    "entidad": "Ruta Pacífica de las Mujeres",
+    "poblacion": [
+      "Mujeres",
+      "Organizaciones de mujeres"
+    ],
+    "funcion": "Movimiento feminista y pacifista con trabajo en derechos de las mujeres, construcción de paz, incidencia y acompañamiento psicosocial y jurídico.",
+    "telefonos": [
+      {
+        "texto": "313 333 7959",
+        "tel": "3133337959"
+      }
+    ],
+    "correos": [
+      "comunicaciones@rutapacifica.org.co"
+    ],
+    "sitioWeb": "https://rutapacifica.org.co/",
+    "direccion": "Carrera 54 # 61-69, barrio Quirinal, Bogotá",
+    "horario": "Lunes a viernes 8:00 a.m.-6:00 p.m.",
+    "cobertura": "Nacional",
+    "disponible24h": false,
+    "fuente": "Ruta Pacífica de las Mujeres · sitio oficial",
+    "fuenteURL": "https://rutapacifica.org.co/contacto/",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "cal-com-1",
+    "territorio": "Caldas",
+    "municipio": "Aguadas",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Aguadas",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3136853917",
+        "tel": "3136853917"
+      },
+      {
+        "texto": "606 8515110",
+        "tel": "6068515110"
+      }
+    ],
+    "correos": [
+      "comisaria_familia@aguadas-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Aguadas",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-2",
+    "territorio": "Caldas",
+    "municipio": "Anserma",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Anserma",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3217826559",
+        "tel": "3217826559"
+      },
+      {
+        "texto": "606 8534975",
+        "tel": "6068534975"
+      },
+      {
+        "texto": "606 8536430",
+        "tel": "6068536430"
+      }
+    ],
+    "correos": [
+      "comisaria@anserma-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Anserma",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-3",
+    "territorio": "Caldas",
+    "municipio": "Aranzazu",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Aranzazu",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3116288829",
+        "tel": "3116288829"
+      }
+    ],
+    "correos": [
+      "comisaria@aranzazu-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Aranzazu",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-4",
+    "territorio": "Caldas",
+    "municipio": "Belalcázar",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Belalcázar",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3147567538",
+        "tel": "3147567538"
+      }
+    ],
+    "correos": [
+      "comisaria@alcaldiabelalcazarcaldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Belalcázar",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-5",
+    "territorio": "Caldas",
+    "municipio": "Chinchiná",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Chinchiná",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8402380 ext. 404",
+        "tel": null
+      },
+      {
+        "texto": "606 8402388",
+        "tel": "6068402388"
+      },
+      {
+        "texto": "3117409055",
+        "tel": "3117409055"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@chinchina-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Chinchiná",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-6",
+    "territorio": "Caldas",
+    "municipio": "Filadelfia",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Filadelfia",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3117475625",
+        "tel": "3117475625"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@filadelfia-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Filadelfia",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-7",
+    "territorio": "Caldas",
+    "municipio": "La Merced",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · La Merced",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3127725353",
+        "tel": "3127725353"
+      },
+      {
+        "texto": "3225371830",
+        "tel": "3225371830"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@lamerced-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "La Merced",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-8",
+    "territorio": "Caldas",
+    "municipio": "La Dorada",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · La Dorada",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3218465997",
+        "tel": "3218465997"
+      }
+    ],
+    "correos": [
+      "comisaria@ladorada-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "La Dorada",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-9",
+    "territorio": "Caldas",
+    "municipio": "Manzanares",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Manzanares",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3145189479",
+        "tel": "3145189479"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@manzanares-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Manzanares",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-10",
+    "territorio": "Caldas",
+    "municipio": "Marmato",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Marmato",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3137734778",
+        "tel": "3137734778"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@marmato-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Marmato",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-11",
+    "territorio": "Caldas",
+    "municipio": "Marquetalia",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Marquetalia",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3122428440",
+        "tel": "3122428440"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@marquetalia-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Marquetalia",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-12",
+    "territorio": "Caldas",
+    "municipio": "Marulanda",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Marulanda",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3137535964",
+        "tel": "3137535964"
+      },
+      {
+        "texto": "3148937017",
+        "tel": "3148937017"
+      }
+    ],
+    "correos": [
+      "comisaria@marulanda-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Marulanda",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-13",
+    "territorio": "Caldas",
+    "municipio": "Neira",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Neira",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3104117800",
+        "tel": "3104117800"
+      }
+    ],
+    "correos": [
+      "comisariafamilia@neira-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Neira",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-14",
+    "territorio": "Caldas",
+    "municipio": "Norcasia",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Norcasia",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8554060",
+        "tel": "6068554060"
+      },
+      {
+        "texto": "3214433001",
+        "tel": "3214433001"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@norcasia-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Norcasia",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-15",
+    "territorio": "Caldas",
+    "municipio": "Pácora",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Pácora",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3054005649",
+        "tel": "3054005649"
+      }
+    ],
+    "correos": [
+      "comisaria@pacora-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Pácora",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-16",
+    "territorio": "Caldas",
+    "municipio": "Palestina",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Palestina",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3126132376",
+        "tel": "3126132376"
+      }
+    ],
+    "correos": [
+      "comisariafamilia@palestina-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Palestina",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-17",
+    "territorio": "Caldas",
+    "municipio": "Pensilvania",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Pensilvania",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3105197348",
+        "tel": "3105197348"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@pensilvania-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Pensilvania",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-18",
+    "territorio": "Caldas",
+    "municipio": "Riosucio",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Riosucio",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3016834646",
+        "tel": "3016834646"
+      }
+    ],
+    "correos": [
+      "comisariafamilia@riosucio-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Riosucio",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-19",
+    "territorio": "Caldas",
+    "municipio": "Risaralda",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Risaralda",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8557220",
+        "tel": "6068557220"
+      },
+      {
+        "texto": "3206887238",
+        "tel": "3206887238"
+      }
+    ],
+    "correos": [
+      "comisaria@risaralda-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Risaralda",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-20",
+    "territorio": "Caldas",
+    "municipio": "Salamina",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Salamina",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8595020",
+        "tel": "6068595020"
+      },
+      {
+        "texto": "606 8595016",
+        "tel": "6068595016"
+      },
+      {
+        "texto": "3118333864",
+        "tel": "3118333864"
+      }
+    ],
+    "correos": [
+      "comisaria@salamina-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Salamina",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-21",
+    "territorio": "Caldas",
+    "municipio": "Samaná",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Samaná",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3148118100",
+        "tel": "3148118100"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@samana-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Samaná",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-22",
+    "territorio": "Caldas",
+    "municipio": "San José",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · San José",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3225194685",
+        "tel": "3225194685"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@sanjose-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "San José",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-23",
+    "territorio": "Caldas",
+    "municipio": "Supía",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Supía",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8562280",
+        "tel": "6068562280"
+      },
+      {
+        "texto": "3117266547",
+        "tel": "3117266547"
+      }
+    ],
+    "correos": [
+      "comisaria@supia-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Supía",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-24",
+    "territorio": "Caldas",
+    "municipio": "Victoria",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Victoria",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3235749641",
+        "tel": "3235749641"
+      }
+    ],
+    "correos": [
+      "comisariadefamilia@victoria-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Victoria",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-25",
+    "territorio": "Caldas",
+    "municipio": "Villamaría",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Villamaría",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3102124524",
+        "tel": "3102124524"
+      },
+      {
+        "texto": "606 8932300",
+        "tel": "6068932300"
+      }
+    ],
+    "correos": [
+      "comisaria@villamaria-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Villamaría",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-com-26",
+    "territorio": "Caldas",
+    "municipio": "Viterbo",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría de Familia · Viterbo",
+    "entidad": "Comisaría de Familia",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Autoridad de protección y restablecimiento de derechos en el contexto familiar, de acuerdo con sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3116304350",
+        "tel": "3116304350"
+      }
+    ],
+    "correos": [
+      "unidadjusticia@viterbo-caldas.gov.co"
+    ],
+    "sitioWeb": "",
+    "direccion": "",
+    "horario": "",
+    "cobertura": "Viterbo",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Comisarías de Familia 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-6",
+    "territorio": "Caldas",
+    "municipio": "Aguadas",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica Aguadas",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 67203",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubaguadas@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Hospital San José",
+    "horario": "7:00 a.m.-1:00 p.m.",
+    "cobertura": "Aguadas y Pácora",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-4",
+    "territorio": "Caldas",
+    "municipio": "Anserma",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica Anserma",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 67200",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubanserma@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Hospital San Vicente de Paúl",
+    "horario": "7:00 a.m.-1:00 p.m.",
+    "cobertura": "Anserma, San José, Risaralda y Guática (Risaralda)",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-5",
+    "territorio": "Caldas",
+    "municipio": "Chinchiná",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica Chinchiná",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 66400",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubchinchina@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Hospital San Marcos",
+    "horario": "7:00 a.m.-1:00 p.m.",
+    "cobertura": "Chinchiná y Palestina",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-2",
+    "territorio": "Caldas",
+    "municipio": "La Dorada",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica La Dorada",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 68002",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubdorada@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Carrera 6 # 10B-04",
+    "horario": "7:00 a.m.-7:00 p.m.",
+    "cobertura": "La Dorada, Victoria, Manzanares, Marquetalia, Pensilvania, Samaná, Norcasia y Puerto Salgar",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-3",
+    "territorio": "Caldas",
+    "municipio": "Salamina",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica Salamina",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 67203",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubsalamina@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Hospital Felipe Suárez",
+    "horario": "7:00 a.m.-1:00 p.m.",
+    "cobertura": "Salamina, Filadelfia, Aranzazu, La Merced y Marulanda",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "cal-ml-1",
+    "territorio": "Caldas",
+    "municipio": "Supía",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Medicina Legal · Unidad Básica Supía",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Servicios médico-legales y forenses solicitados por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 3515310 ext. 66000",
+        "tel": "6063515310"
+      }
+    ],
+    "correos": [
+      "ubsupia@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Carrera 7 # 24-42, Casa de la Justicia, barrio Libertadores",
+    "horario": "7:00 a.m.-1:00 p.m.",
+    "cobertura": "Supía, Riosucio, Marmato y Quinchía (Risaralda)",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio Medicina Legal 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-com-1",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría Primera de Familia · Manizales",
+    "entidad": "Secretaría de Gobierno · Alcaldía de Manizales",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Atención, orientación, medidas de protección y actuaciones de restablecimiento de derechos dentro de sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8806696",
+        "tel": "6068806696"
+      },
+      {
+        "texto": "3173659341",
+        "tel": "3173659341"
+      }
+    ],
+    "correos": [
+      "jorge.suarez@manizales.gov.co",
+      "denunciascomisariadefamilia@manizales.gov.co"
+    ],
+    "sitioWeb": "https://manizales.gov.co/",
+    "direccion": "Calle 33 # 20-51, Edificio Bomberos Fundadores",
+    "horario": "Lunes a jueves 7:00-11:30 a.m. y 1:00-4:30 p.m. · viernes 7:00-11:30 a.m. y 1:00-3:30 p.m.",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas 2026 + ruta municipal",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-com-2",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría Segunda de Familia · Manizales",
+    "entidad": "Secretaría de Gobierno · Alcaldía de Manizales",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Atención, orientación, medidas de protección y actuaciones de restablecimiento de derechos dentro de sus competencias.",
+    "telefonos": [
+      {
+        "texto": "606 8808182",
+        "tel": "6068808182"
+      },
+      {
+        "texto": "3176685490",
+        "tel": "3176685490"
+      }
+    ],
+    "correos": [
+      "liliana.ossa@manizales.gov.co",
+      "denunciascomisariadefamilia@manizales.gov.co"
+    ],
+    "sitioWeb": "https://manizales.gov.co/",
+    "direccion": "Carrera 28A con Calle 14",
+    "horario": "Lunes a jueves 7:00-11:30 a.m. y 1:00-4:30 p.m. · viernes 7:00-11:30 a.m. y 1:00-3:30 p.m.",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas 2026 + ruta municipal",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-com-3",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría Tercera de Familia · Manizales",
+    "entidad": "Secretaría de Gobierno · Alcaldía de Manizales",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Atención, orientación, medidas de protección y actuaciones de restablecimiento de derechos dentro de sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3136858019",
+        "tel": "3136858019"
+      }
+    ],
+    "correos": [
+      "juan.hoyos@manizales.gov.co",
+      "denunciascomisariadefamilia@manizales.gov.co"
+    ],
+    "sitioWeb": "https://manizales.gov.co/",
+    "direccion": "Casa de Justicia, Bosques del Norte",
+    "horario": "Lunes a jueves 7:00-11:30 a.m. y 1:00-4:30 p.m. · viernes 7:00-11:30 a.m. y 1:00-3:30 p.m.",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas 2026 + ruta municipal",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-com-4",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "Comisaría Cuarta de Familia · Manizales",
+    "entidad": "Secretaría de Gobierno · Alcaldía de Manizales",
+    "poblacion": [
+      "Familias",
+      "Niñas, niños y adolescentes",
+      "Personas afectadas por violencia en el contexto familiar"
+    ],
+    "funcion": "Atención, orientación, medidas de protección y actuaciones de restablecimiento de derechos dentro de sus competencias.",
+    "telefonos": [
+      {
+        "texto": "3136858019",
+        "tel": "3136858019"
+      }
+    ],
+    "correos": [
+      "juan.hoyos@manizales.gov.co",
+      "denunciascomisariadefamilia@manizales.gov.co"
+    ],
+    "sitioWeb": "https://manizales.gov.co/",
+    "direccion": "Carrera 34 # 65-13, CAI Fátima",
+    "horario": "Lunes a jueves 7:00-11:30 a.m. y 1:00-4:30 p.m. · viernes 7:00-11:30 a.m. y 1:00-3:30 p.m.",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas 2026 + ruta municipal",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-icbf",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Protección",
+    "nombre": "ICBF · Regional Caldas / Línea 141",
+    "entidad": "Instituto Colombiano de Bienestar Familiar",
+    "poblacion": [
+      "Niñas, niños y adolescentes",
+      "Familias"
+    ],
+    "funcion": "Protección y restablecimiento de derechos de niñas, niños y adolescentes; activación y articulación de rutas.",
+    "telefonos": [
+      {
+        "texto": "141",
+        "tel": "141"
+      },
+      {
+        "texto": "01 8000 91 80 80",
+        "tel": "018000918080"
+      }
+    ],
+    "correos": [
+      "atencionalciudadano@icbf.gov.co"
+    ],
+    "sitioWeb": "https://www.icbf.gov.co/",
+    "direccion": "Regional Caldas: Carrera 23 # 39-60, Manizales",
+    "horario": "Línea 141: 24 horas · atención presencial según sede",
+    "cobertura": "Caldas",
+    "disponible24h": true,
+    "fuente": "Ruta Departamental de Caldas 2026 + ICBF",
+    "fuenteURL": "https://www.icbf.gov.co/linea-141",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "mzl-medlegal",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Instituto Nacional de Medicina Legal · Unidad Básica Manizales",
+    "entidad": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "poblacion": [
+      "Población remitida por autoridad competente"
+    ],
+    "funcion": "Valoraciones médico-legales y forenses solicitadas por autoridades competentes.",
+    "telefonos": [
+      {
+        "texto": "606 8860060",
+        "tel": "6068860060"
+      },
+      {
+        "texto": "606 8860006 ext. 3600",
+        "tel": "6068860006"
+      },
+      {
+        "texto": "317 434 2530",
+        "tel": "3174342530"
+      }
+    ],
+    "correos": [
+      "dscaldas@medicinalegal.gov.co"
+    ],
+    "sitioWeb": "https://www.medicinalegal.gov.co/",
+    "direccion": "Carrera 27 # 48-85, barrio Faneón, Manizales",
+    "horario": "7:00 a.m.-7:00 p.m.",
+    "cobertura": "Manizales, Neira y Villamaría",
+    "disponible24h": false,
+    "fuente": "Ruta Departamental de Caldas · Directorio 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-ucaldas",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Institución educativa",
+    "sector": "Educación",
+    "nombre": "Línea Amiga · Bienestar Universitario",
+    "entidad": "Universidad de Caldas",
+    "poblacion": [
+      "Estudiantes",
+      "Docentes",
+      "Personal universitario"
+    ],
+    "funcion": "Canal de contacto de Bienestar Universitario para orientación y acompañamiento a la comunidad universitaria.",
+    "telefonos": [
+      {
+        "texto": "321 713 3147",
+        "tel": "3217133147"
+      }
+    ],
+    "correos": [
+      "bienestar.psicosocial@ucaldas.edu.co",
+      "bienestar.convivencia@ucaldas.edu.co"
+    ],
+    "sitioWeb": "https://www.ucaldas.edu.co/",
+    "direccion": "Bienestar Universitario, Edificio Bicentenario, Calle 66B # 30-156, Manizales",
+    "horario": "Consultar disponibilidad del servicio",
+    "cobertura": "Comunidad Universidad de Caldas",
+    "disponible24h": false,
+    "fuente": "Universidad de Caldas · Línea Amiga",
+    "fuenteURL": "https://www.ucaldas.edu.co/portal/86428-2/",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "mzl-personeria",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Ministerio Público",
+    "nombre": "Personería de Manizales",
+    "entidad": "Personería de Manizales",
+    "poblacion": [
+      "Población general"
+    ],
+    "funcion": "Orientación y defensa de derechos; vigilancia del cumplimiento de las funciones públicas y apoyo ante barreras institucionales.",
+    "telefonos": [
+      {
+        "texto": "314 555 6790",
+        "tel": "3145556790"
+      },
+      {
+        "texto": "606 8720707",
+        "tel": "6068720707"
+      }
+    ],
+    "correos": [
+      "contacto@personeriademanizales.gov.co"
+    ],
+    "sitioWeb": "https://www.personeriademanizales.gov.co/",
+    "direccion": "Edificio Seguros Atlas, Calle 21 # 23-22, pisos 10 y 11, Manizales",
+    "horario": "Lunes a jueves 7:00-11:45 a.m. y 1:00-4:30 p.m. · viernes 7:00-11:45 a.m. y 1:00-3:30 p.m.",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Directorio institucional publicado por Alcaldía de Manizales",
+    "fuenteURL": "https://manizales.gov.co/participa/modalidad-de-control-social/",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "mzl-fiscalia",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Justicia",
+    "nombre": "Sala de Denuncias · Fiscalía Seccional Caldas",
+    "entidad": "Fiscalía General de la Nación",
+    "poblacion": [
+      "Población general"
+    ],
+    "funcion": "Recepción de denuncias y orientación para acceso a la justicia. En Manizales también operan CAIVAS y canales de actos urgentes.",
+    "telefonos": [
+      {
+        "texto": "122",
+        "tel": "122"
+      },
+      {
+        "texto": "01 8000 919 748",
+        "tel": "018000919748"
+      }
+    ],
+    "correos": [
+      "atencionusuario.caldas@fiscalia.gov.co"
+    ],
+    "sitioWeb": "https://www.fiscalia.gov.co/colombia/",
+    "direccion": "Sala de Denuncias: Carrera 23 # 20-40, Manizales",
+    "horario": "Sala de Denuncias: lunes a viernes 7:30 a.m.-5:00 p.m. · Denuncia Fácil y línea 122: 24 horas",
+    "cobertura": "Caldas",
+    "disponible24h": true,
+    "fuente": "Ruta Departamental de Caldas · Directorio Fiscalía 2026",
+    "fuenteURL": "DEPARTAMENTO RUTA JUNIO 2026 (4).pdf",
+    "fechaActualizacion": "2026-06-01"
+  },
+  {
+    "id": "mzl-salud",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Salud",
+    "nombre": "Secretaría de Salud Pública · Salud Mental y Violencias",
+    "entidad": "Alcaldía de Manizales",
+    "poblacion": [
+      "Población general"
+    ],
+    "funcion": "Orientación en salud mental, intervención psicosocial y activación de rutas frente a violencias de género, intrafamiliar y sexual.",
+    "telefonos": [
+      {
+        "texto": "123 opción 3",
+        "tel": "123"
+      },
+      {
+        "texto": "320 562 0449",
+        "tel": "3205620449"
+      }
+    ],
+    "correos": [
+      "violenciadegenero@manizales.gov.co"
+    ],
+    "sitioWeb": "https://centrodeinformacion.manizales.gov.co/este-10-de-septiembre-manizales-recuerda-que-pedir-ayuda-tambien-es-un-acto-de-valentia/",
+    "direccion": "Secretaría de Salud Pública: Calle 19 # 21-44, Manizales",
+    "horario": "Línea 123 opción 3: 24 horas. Servicios presenciales según punto de atención.",
+    "cobertura": "Manizales urbano y rural",
+    "disponible24h": true,
+    "fuente": "Alcaldía de Manizales · información vigente 2026",
+    "fuenteURL": "https://centrodeinformacion.manizales.gov.co/este-10-de-septiembre-manizales-recuerda-que-pedir-ayuda-tambien-es-un-acto-de-valentia/",
+    "fechaActualizacion": "2026-09-30"
+  },
+  {
+    "id": "mzl-secretaria-mujeres",
+    "territorio": "Manizales",
+    "municipio": "Manizales",
+    "tipoEntidad": "Entidad pública",
+    "sector": "Mujeres y VBG",
+    "nombre": "Secretaría de las Mujeres y Equidad de Género",
+    "entidad": "Alcaldía de Manizales",
+    "poblacion": [
+      "Mujeres",
+      "Población LGBTIQ+",
+      "Población general"
+    ],
+    "funcion": "Lidera la política pública de mujeres y equidad de género y ofrece programas de atención y prevención frente a violencias basadas en género.",
+    "telefonos": [
+      {
+        "texto": "606 892 8000",
+        "tel": "6068928000"
+      },
+      {
+        "texto": "01 8000 968 988",
+        "tel": "018000968988"
+      }
+    ],
+    "correos": [],
+    "sitioWeb": "https://manizales.gov.co/secretarias/secretaria-de-las-mujeres-y-equidad-de-genero/",
+    "direccion": "Centro Administrativo Municipal CAM, Calle 19 # 21-44, Manizales",
+    "horario": "Lunes a jueves 7:00 a.m.-12:00 m. y 1:30-4:30 p.m. · viernes 7:00 a.m.-3:00 p.m. jornada continua",
+    "cobertura": "Manizales",
+    "disponible24h": false,
+    "fuente": "Alcaldía de Manizales · Secretaría de las Mujeres y Equidad de Género",
+    "fuenteURL": "https://manizales.gov.co/secretarias/secretaria-de-las-mujeres-y-equidad-de-genero/",
+    "fechaActualizacion": "2026-09-30"
+  }
+];
+/* ================= FIN DE LOS DATOS ================= */
+</script>
+<script>
+"use strict";
+(function(){
+const $=s=>document.querySelector(s);
+function esc(v){return v==null?"":String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+const esURL=s=>/^https?:\/\//i.test(String(s||"").trim());
+const fecha=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?`${m[3]}/${m[2]}/${m[1]}`:"";};
+
+/* Regla de publicación: solo registros con fuente y al menos un canal de contacto */
+/* (se trabaja sobre copias: DIRECTORIO_DATA no se modifica) */
+const DATA=DIRECTORIO_DATA
+  .filter(r=>r&&r.id&&r.nombre&&r.fuente&&((r.telefonos&&r.telefonos.length)||(r.correos&&r.correos.length)||r.sitioWeb))
+  .map(r=>Object.assign({},r,{
+    _txt:norm([r.nombre,r.entidad,r.municipio,r.sector,r.tipoEntidad,(r.poblacion||[]).join(" "),r.funcion,r.cobertura].join(" ")),
+    _cob:norm(r.cobertura).replace(/\([^)]*\)/g,"").split(/,|\sy\s/).map(s=>s.trim()).filter(Boolean)
+  }));
+
+/* ¿El registro aplica al municipio M? Municipio propio, municipio listado en Cobertura, o cobertura departamental (Caldas). */
+function cubre(r,M){const m=norm(M);return norm(r.municipio)===m||r._cob.includes(m)||norm(r.cobertura)==="caldas";}
+
+const S={cob:CONFIG.coberturaInicial,q:"",sector:"",mun:"",tipo:"",pob:"",h24:false};
+
+function filtrar(){
+  const toks=norm(S.q).split(/\s+/).filter(Boolean);
+  return DATA.filter(r=>{
+    if(S.cob==="nacional"&&r.territorio!=="Nacional")return false;
+    if(S.cob==="manizales"&&!(r.territorio==="Nacional"||r.territorio==="Manizales"))return false;
+    if(S.cob==="caldas"&&S.mun&&r.territorio!=="Nacional"&&!cubre(r,S.mun))return false;
+    if(S.sector&&r.sector!==S.sector)return false;
+    if(S.tipo&&r.tipoEntidad!==S.tipo)return false;
+    if(S.pob&&!(r.poblacion||[]).includes(S.pob))return false;
+    if(S.h24&&!r.disponible24h)return false;
+    return toks.every(t=>r._txt.includes(t));
+  });
+}
+/* Agrupación territorial (sin ranking: orden de la Base Maestra dentro de cada grupo) */
+function agrupar(lista){
+  const nac=lista.filter(r=>r.territorio==="Nacional"),loc=lista.filter(r=>r.territorio!=="Nacional");
+  const g=[];
+  if(S.cob==="manizales")g.push(["En Manizales",loc]);
+  else if(S.cob==="caldas"){
+    if(S.mun){
+      const m=norm(S.mun);
+      g.push(["En "+S.mun,loc.filter(r=>norm(r.municipio)===m)]);
+      g.push(["Con cobertura en "+S.mun,loc.filter(r=>norm(r.municipio)!==m)]);
+    }else{
+      g.push(["Municipios de Caldas",loc.filter(r=>r.territorio==="Caldas")]);
+      g.push(["Manizales",loc.filter(r=>r.territorio==="Manizales")]);
+    }
+  }
+  g.push(["Alcance nacional",nac]);
+  return g.filter(x=>x[1].length);
+}
+
+function telLink(t,cls,pre){return `<a class="${cls}" href="tel:${esc(t.tel)}">${pre}${esc(t.texto)}</a>`;}
+function ficha(r){
+  const id="f-"+r.id;
+  const tels=r.telefonos||[],correos=r.correos||[];
+  const prim=tels.find(t=>t.tel);
+  const otros=tels.filter(t=>t!==prim);
+  const lugar=r.municipio||r.territorio;
+  let acc="";
+  if(prim)acc+=telLink(prim,"btn btn-primario","Llamar <span class=\"vh\">a "+esc(r.nombre)+" al</span> ");
+  if(correos.length)acc+=`<a class="btn btn-sec" href="mailto:${esc(correos[0])}">Correo<span class="vh"> de ${esc(r.nombre)}</span></a>`;
+  if(esURL(r.sitioWeb))acc+=`<a class="btn btn-sec" href="${esc(r.sitioWeb)}">Sitio web<span class="vh"> de ${esc(r.nombre)}</span></a>`;
+  const d=[];
+  if(r.poblacion&&r.poblacion.length)d.push(["A quién atiende",esc(r.poblacion.join(", "))]);
+  if(r.horario)d.push(["Horario",esc(r.horario)]);
+  if(r.direccion)d.push(["Dirección",esc(r.direccion)]);
+  if(r.cobertura)d.push(["Cobertura",esc(r.cobertura)]);
+  /* Teléfonos adicionales (todos menos el principal) solo dentro de «Ver detalles» */
+  if(otros.length)d.push([prim?"Canales adicionales":"Teléfono",`<ul>${otros.map(t=>`<li>${t.tel?telLink(t,"",""):`<span class="sin-enlace">${esc(t.texto)}</span>`}</li>`).join("")}</ul>`]);
+  if(correos.length)d.push([correos.length>1?"Correos electrónicos":"Correo electrónico",`<ul>${correos.map(c=>`<li><a href="mailto:${esc(c)}">${esc(c)}</a></li>`).join("")}</ul>`]);
+  let fte=`Fuente: ${esc(r.fuente)}`;
+  if(r.fechaActualizacion)fte+=`<br>Información actualizada: ${esc(fecha(r.fechaActualizacion))}`;
+  if(esURL(r.fuenteURL))fte+=`<br><a href="${esc(r.fuenteURL)}">Consultar fuente oficial<span class="vh"> de ${esc(r.nombre)}</span></a>`;
+  d.push(["Fuente y actualización",`<div class="fuente">${fte}</div>`]);
+  return `<li><article class="ficha" aria-labelledby="${id}">
+    <div class="meta"><span class="tag">${esc(r.sector)}</span><span class="lugar">${esc(lugar)}</span>${r.disponible24h?'<span class="badge">24 horas</span>':""}</div>
+    <h4 id="${id}">${esc(r.nombre)}</h4>
+    ${r.entidad&&norm(r.entidad)!==norm(r.nombre)&&!norm(r.nombre).includes(norm(r.entidad))?`<p class="entidad">${esc(r.entidad)}</p>`:""}
+    ${r.funcion?`<p class="funcion">${esc(r.funcion)}</p>`:""}
+    ${acc?`<div class="acciones">${acc}</div>`:""}
+    <details class="det"><summary>Ver detalles<span class="vh"> de ${esc(r.nombre)}</span></summary>
+      <dl class="datos">${d.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+    </details>
+  </article></li>`;
+}
+
+const COB_N={nacional:"Nacional",caldas:"Caldas",manizales:"Manizales"};
+let tAnuncio=null;
+function render(){
+  const lista=filtrar();
+  const gr=agrupar(lista);
+  $("#resultados").innerHTML=gr.map(([t,l])=>`<div class="grupo"><h3>${esc(t)} <small>${l.length} ${l.length===1?"resultado":"resultados"}</small></h3><ul class="lista">${l.map(ficha).join("")}</ul></div>`).join("");
+  $("#vacio").hidden=lista.length>0;
+  const ambito=S.cob==="caldas"&&S.mun?`Caldas · ${S.mun}`:COB_N[S.cob];
+  const txt=lista.length?`${lista.length} ${lista.length===1?"resultado":"resultados"} · ${ambito}`:`Sin resultados · ${ambito}`;
+  clearTimeout(tAnuncio);
+  tAnuncio=setTimeout(()=>{$("#contador").textContent=txt;},S.q?450:0);
+  const activos=S.q||S.sector||S.tipo||S.pob||S.h24||S.mun||S.cob!==CONFIG.coberturaInicial;
+  $("#btn-limpiar").hidden=!activos;
+}
+
+function opciones(sel,todos,vals){sel.innerHTML=`<option value="">${esc(todos)}</option>`+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");}
+function ajustarMunicipio(){
+  $("#bloque-mun").hidden=S.cob==="nacional";
+  $("#mun-select").hidden=S.cob!=="caldas";
+  $("#mun-fijo").hidden=S.cob!=="manizales";
+  if(S.cob!=="caldas"){S.mun="";$("#f-municipio").value="";}
+}
+function accesoRutas(){
+  if(CONFIG.rutasURL)return `<a class="btn btn-primario" href="${esc(CONFIG.rutasURL)}" target="_top">Usa primero la herramienta de Rutas de atención</a>`;
+  return `<button type="button" class="btn" disabled>Rutas de atención · enlace próximamente</button>`;
+}
+function limpiar(){
+  Object.assign(S,{cob:CONFIG.coberturaInicial,q:"",sector:"",mun:"",tipo:"",pob:"",h24:false});
+  $("#f-buscar").value="";$("#f-sector").value="";$("#f-tipo").value="";$("#f-poblacion").value="";$("#f-24h").checked=false;
+  const r=document.querySelector(`#seg-cobertura input[value="${S.cob}"]`);if(r)r.checked=true;
+  ajustarMunicipio();render();$("#f-buscar").focus();
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  $("#pie-version").textContent="Versión "+CONFIG.version+" · Fundación Milagro de Abril";
+  if(CONFIG.logoURL)$("#logo-link").innerHTML=`<img src="${esc(CONFIG.logoURL)}" alt="">`;
+  $("#chips-emergencia").innerHTML=CANALES.map(c=>`<li><a class="chip${c.urg?" urg":""}" href="tel:${esc(c.tel)}" aria-label="Llamar al ${esc(c.num)}, ${esc(c.lab)}"><b>${esc(c.num)}</b><span>${esc(c.lab)}</span></a></li>`).join("");
+  $("#acceso-rutas").innerHTML=`<p><b>¿No sabes a quién acudir?</b><br>Usa primero la herramienta de Rutas de atención para identificar qué ruta puede corresponder a tu situación.</p>${accesoRutas()}`;
+  const fechas=DATA.map(r=>r.fechaActualizacion).filter(Boolean).sort();
+  if(fechas.length)$("#info-fecha").textContent="Última actualización de la base: "+fecha(fechas[fechas.length-1])+".";else $("#info-fecha").remove();
+
+  $("#seg-cobertura").innerHTML=CATALOGOS.cobertura.map(c=>`<label><input type="radio" name="cobertura" value="${c.id}"${c.id===S.cob?" checked":""}><span>${esc(c.n)}</span></label>`).join("");
+  const presentes=(campo,cat)=>cat.filter(v=>DATA.some(r=>r[campo]===v));
+  opciones($("#f-sector"),"Todos los sectores",presentes("sector",CATALOGOS.sector));
+  opciones($("#f-tipo"),"Todos los tipos",presentes("tipoEntidad",CATALOGOS.tipoEntidad));
+  const pobs=[...new Set(DATA.flatMap(r=>r.poblacion||[]))].sort((a,b)=>a.localeCompare(b,"es"));
+  opciones($("#f-poblacion"),"Todas las poblaciones",pobs);
+  opciones($("#f-municipio"),"Todos los municipios",CATALOGOS.municipiosCaldas.filter(m=>DATA.some(r=>r.territorio!=="Nacional"&&cubre(r,m))));
+
+  $("#seg-cobertura").addEventListener("change",e=>{S.cob=e.target.value;ajustarMunicipio();render();});
+  $("#f-buscar").addEventListener("input",e=>{S.q=e.target.value;render();});
+  $("#f-sector").addEventListener("change",e=>{S.sector=e.target.value;render();});
+  $("#f-municipio").addEventListener("change",e=>{S.mun=e.target.value;render();});
+  $("#f-tipo").addEventListener("change",e=>{S.tipo=e.target.value;render();});
+  $("#f-poblacion").addEventListener("change",e=>{S.pob=e.target.value;render();});
+  $("#f-24h").addEventListener("change",e=>{S.h24=e.target.checked;render();});
+  $("#btn-limpiar").addEventListener("click",limpiar);
+  $("#vacio-acciones").innerHTML=`<button type="button" class="btn btn-sec" id="vacio-limpiar">Limpiar filtros</button>${CONFIG.rutasURL?`<a class="btn btn-primario" href="${esc(CONFIG.rutasURL)}" target="_top">Usar herramienta de Rutas de atención</a>`:""}`;
+  $("#vacio-limpiar").addEventListener("click",limpiar);
+
+  $("#logo-link").addEventListener("click",e=>{e.preventDefault();window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});$("#h1").focus({preventScroll:true});});
+  $("#btn-salida").addEventListener("click",e=>{
+    const url=CONFIG.salidaURL||"https://www.google.com/";
+    try{window.top.location.replace(url);e.preventDefault();}
+    catch(err){/* Sin acceso a la ventana superior: el enlace navega con target="_top" */}
+  });
+  ajustarMunicipio();render();
+});
+})();
+</script>
+<script>
+/* ===================================================================
+   CONTADOR ANÓNIMO DE VISITAS
+   Solo suma 1 al conteo del día. NO se envía ni se guarda ningún dato de la persona
+   (ni nombre, ni correo, ni identificador, ni la página de origen).
+   =================================================================== */
+(function(){
+  var URL = "https://script.google.com/macros/s/AKfycbz5GvDHY8g_rjWO9qHLCtafJLOpqplZ0ICnmlRGAXY_Rgptok7CTG2UY0369BrroHDa/exec";   /* ← URL (/exec) del Apps Script propio de esta herramienta */
+  var MARCA = "fma_visita_directorio_rutas";
+  if (!URL || URL.indexOf("PEGAR") >= 0) return;
+  try { if (sessionStorage.getItem(MARCA)) return; sessionStorage.setItem(MARCA, "1"); } catch(e){}   /* una sola vez por pestaña: recargar no suma */
+  try {
+    var i = new Image();
+    i.referrerPolicy = "no-referrer";   /* no envía la página de origen */
+    i.crossOrigin = "anonymous";        /* no envía cookies (ni sesión de Google) */
+    i.src = URL + (URL.indexOf("?") < 0 ? "?" : "&") + "action=visita&t=" + Date.now();
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
